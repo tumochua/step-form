@@ -1,130 +1,41 @@
 <template>
   <div>
-    <div>
-      <div v-for="listStep in listStepForm.flat(1)" :key="listStep">
-        <div v-if="state.currentPage === listStep.stepPage">
+    <div class="step__group">
+      <div
+        class="step-control"
+        v-for="(fields, index) in getListField"
+        :key="index"
+      >
+        <div v-for="(field, index) in fields" :key="index">
           <div>
-            <label>{{ listStep.name }}</label>
-            <input-component :listStep="listStep"></input-component>
+            <label :for="key">{{ field.label }}</label>
+            <InputComponent :id="key" :field="field" :name="index" />
+            <p class="message">{{ field.message }}</p>
           </div>
         </div>
       </div>
     </div>
-    <!-- <div>{{ state }}</div> -->
-
-    <!-- <div
-      class="body-form"
-      v-for="listStep in state.listSteps"
-      :key="listStep.stepPage"
-    >
-      <div v-if="listStep.stepPage === state.currentPage">
-        <div v-for="(item, index) in listStep.forms" :key="index">
-          <div>{{ item }}</div>
-          <div v-if="listStep.stepPage === state.currentPage">
-            <label>{{ item.name }}</label>
-            <input-component :listStep="item"></input-component>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
-import InputComponent from "./InputComponent.vue";
+import { mapGetters, mapState } from "vuex";
+import InputComponent from "../src/components/stepForm/InputComponent.vue";
 export default {
   name: "FormValidation",
   components: {
     InputComponent,
   },
   data() {
-    return {
-      state: {
-        currentPage: 1,
-        progress: 0,
-        listSteps: [
-          {
-            status: false,
-            text: "about you",
-            forms: [
-              {
-                stepPage: 1,
-
-                model: "tumochua",
-                name: "name",
-                type: "text",
-                rule: "required",
-              },
-              {
-                stepPage: 1,
-
-                model: "",
-                name: "email",
-                type: "text",
-                rule: "required|email",
-              },
-            ],
-          },
-          {
-            status: false,
-            text: "about your company",
-            forms: [
-              {
-                stepPage: 2,
-
-                model: "",
-                name: "companyname",
-                type: "text",
-                rule: "required",
-              },
-              {
-                stepPage: 2,
-
-                model: "",
-                name: "numberofemployee",
-                type: "text",
-                rule: "required|numeric",
-              },
-            ],
-          },
-          {
-            status: false,
-            text: "finishing up",
-            forms: [
-              {
-                stepPage: 3,
-
-                model: "",
-                name: "select option",
-                type: "select",
-                rule: "required",
-              },
-              {
-                stepPage: 3,
-
-                model: "",
-                name: "checkbox option",
-                type: "checkbox",
-                rule: "required",
-              },
-            ],
-          },
-        ],
-      },
-    };
+    return {};
   },
   computed: {
     ...mapState({
       currentPage: (state) => state.currentPage,
     }),
-    listStepForm() {
-      return this.state.listSteps.map((listStep) => {
-        console.log("check listStepForm ; ", listStep);
-        return listStep.forms;
-      });
-    },
+    ...mapGetters(["mapcurrentPage", "getListField"]),
   },
+  methods: {},
   // computed: {
   //   ...mapState({
   //     currentPage: (state) => state.currentPage,

@@ -8,6 +8,9 @@ const actions = {
   reset({ commit }) {
     commit("reset");
   },
+  changeInput({ commit }) {
+    commit("changeInput");
+  },
 };
 
 export default actions;

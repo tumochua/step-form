@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="header">
-      <div v-for="header in getHeaderData" :key="header.stepPage">
-        <div :class="{ active: header.stepPage === active }">
+      <div v-for="header in getHeaderData" :key="header.stepId">
+        <div :class="{ active: header.stepId === active }">
           <div class="header-container">
-            <div class="header-step-page">{{ header.stepPage }}</div>
+            <div class="header-step-page">{{ header.stepId }}</div>
             <div class="header-text">{{ header.text }}</div>
           </div>
         </div>
@@ -28,7 +28,7 @@ export default {
     ...mapGetters(["dataForm", "handleValidation"]),
 
     getHeaderData() {
-      return this.$store.state.listStep;
+      return this.$store.state.formStep;
     },
   },
   methods: {},

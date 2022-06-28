@@ -1,156 +1,122 @@
 <template>
-  <div class="body-form">
-    <Form @submit="onSubmit">
-      <keep-alive>
-        <div v-if="currentPage === 1" class="step">
+  <div>
+    <div>
+      <div v-for="listStep in listStepForm.flat(1)" :key="listStep">
+        <div v-if="currentPage === listStep.stepId">
           <div>
-            <div class="title">Full Name</div>
-            <Field
-              name="name"
-              type="text"
-              v-model="step.name"
-              :rules="isRequiredName"
-              class="form-control"
-              :class="{ isValidation: step.errorForm }"
-            />
-
-            <p class="error-form">
-              <ErrorMessage name="name" />
-            </p>
-          </div>
-          <div>
-            <div class="title">Your Email</div>
-            <Field
-              name="email"
-              type="email"
-              v-model="step.email"
-              :rules="validateEmail"
-              class="form-control"
-              :class="{ isValidation: step.errorForm }"
-            />
-            <p class="error-form"><ErrorMessage name="email" /></p>
-          </div>
-          <div>
-            <button
-              v-if="currentPage === 2"
-              @click="handleStepEnd"
-              class="btn-previous"
-            >
-              PREVIOUS
-            </button>
-
-            <button @click="handleStepBack(step)" class="btn-next">NEXT</button>
-          </div>
-        </div>
-      </keep-alive>
-      <div v-if="currentPage === 2" class="step">
-        <keep-alive>
-          <div>
-            <div>
-              <div class="title">Your Company Name</div>
-              <Field
-                name="companyname"
-                type="email"
-                v-model="step.companyname"
-                :rules="isRequiredCompanyname"
-                class="form-control"
-              />
-              <p class="error-form">
-                <ErrorMessage name="companyname" />
-              </p>
-            </div>
-            <div>
-              <div class="title">Number of Employees</div>
-              <Field
-                name="numberofemployee"
-                type="number"
-                v-model.number="step.numberofemployee"
-                :rules="isRequiredNumbe"
-                class="form-control"
-              />
-              <br />
-              <p class="error-form">
-                <ErrorMessage name="numberofemployee" />
-              </p>
-              <br />
-              <button @click="handleStepEnd" class="btn-previous">
-                PREVIOUS
-              </button>
-
-              <button @click="handleStepBack2(step)" class="btn-next">
-                NEXT
-              </button>
-            </div>
-          </div>
-        </keep-alive>
-      </div>
-      <div v-if="currentPage === 3">
-        <label class="title">From Where did you hear about us</label><br />
-        <select
-          name="cars"
-          id="cars"
-          v-model="step.selectOption"
-          class="select-step3"
-        >
-          <option value="volvo" selected>Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="mercedes">Mercedes</option>
-          <option value="audi">Audi</option>
-        </select>
-        <div class="error-form" v-if="step.selectRequid">This is required</div>
-        <div>
-          <div>
-            <label for="terms">
-              <input
-                type="checkbox"
-                id="terms"
-                name="terms"
-                v-model="step.termsState"
-                @change="handleTermsState"
-              />
-              {{ termsState }}
-              <label>I accept terms & conditions</label>
-            </label>
-            <p
-              style="color: red"
-              class="for-error terms-error"
-              v-if="termsError"
-            >
-              The field is required!
-            </p>
-            <div>
-              <button @click="hanldeReset" class="btn-previous">RESET</button>
-              <button @click="handleSubmit" class="btn-next">SEND</button>
-            </div>
+            <label>{{ listStep.name }}</label>
+            <input-component
+              :listStep="listStep"
+              @handeOnInput="handeOnInput"
+              :currentPage="state.currentPage"
+            ></input-component>
           </div>
         </div>
       </div>
-    </Form>
+      <button @click="handleEnd">Previous</button>
+      <button @click="handleNext">Next</button>
+    </div>
+    <!-- <div>{{ state }}</div> -->
+
+    <!-- <div
+      class="body-form"
+      v-for="listStep in state.listSteps"
+      :key="listStep.stepPage"
+    >
+      <div v-if="listStep.stepPage === state.currentPage">
+        <div v-for="(item, index) in listStep.forms" :key="index">
+          <div>{{ item }}</div>
+          <div v-if="listStep.stepPage === state.currentPage">
+            <label>{{ item.name }}</label>
+            <input-component :listStep="item"></input-component>
+          </div>
+        </div>
+      </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { Field, Form, ErrorMessage } from "vee-validate";
+import InputComponent from "./InputComponent.vue";
 export default {
   name: "FormValidation",
   components: {
-    Form,
-    Field,
-    ErrorMessage,
+    InputComponent,
   },
   data() {
     return {
-      step: {
-        errorForm: false,
-        name: "",
-        email: "",
-        companyname: "",
-        numberofemployee: "",
-        selectOption: "",
-        selectRequid: false,
-        termsState: false,
-        validated: false,
+      state: {
+        currentPage: 1,
+        progress: 0,
+        error: false,
+        listSteps: [
+          {
+            status: false,
+            text: "about you",
+            forms: [
+              {
+                stepId: 1,
+                model: "",
+                name: "name",
+                type: "text",
+                rule: "required",
+              },
+              {
+                stepId: 1,
+
+                model: "",
+                name: "email",
+                type: "text",
+                rule: "required|email",
+              },
+            ],
+          },
+          {
+            status: false,
+            text: "about your company",
+            forms: [
+              {
+                stepId: 2,
+
+                model: "",
+                name: "companyname",
+                type: "text",
+                rule: "required",
+              },
+              {
+                stepId: 2,
+
+                model: "",
+                name: "numberofemployee",
+                type: "text",
+                rule: "required|numeric",
+              },
+            ],
+          },
+          {
+            status: false,
+            text: "finishing up",
+            forms: [
+              {
+                stepId: 3,
+
+                model: "",
+                name: "select option",
+                type: "select",
+                rule: "required",
+              },
+              {
+                stepId: 3,
+
+                model: "",
+                name: "checkbox option",
+                type: "checkbox",
+                rule: "required",
+              },
+            ],
+          },
+        ],
       },
     };
   },
@@ -158,82 +124,111 @@ export default {
     ...mapState({
       currentPage: (state) => state.currentPage,
     }),
-    termsError() {
-      return this.step.validated && !this.step.termsState;
+    listStepForm() {
+      return this.state.listSteps.map((listStep) => {
+        return listStep.forms;
+      });
     },
   },
   methods: {
-    onSubmit(values) {
-      console.log(JSON.stringify(values, null, 2));
+    handleNext() {
+      this.$store.dispatch("backStep");
     },
-    handleStepBack(value) {
-      if (value.name.trim() === "" && value.email.trim() === "") {
-        this.step.errorForm = true;
-      }
-      const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-      if (value.name.trim() && regex.test(value.email)) {
-        this.$store.dispatch("backStep");
-        this.step.errorForm = false;
-      }
-    },
-    handleStepBack2(value) {
-      const validation =
-        isNaN(value.numberofemployee) || value.numberofemployee > 1;
-      if (value.companyname.trim() && validation) {
-        this.$store.dispatch("backStep");
-        return false;
-      }
-    },
-    handleStepEnd() {
+    handleEnd() {
       this.$store.dispatch("endStep");
     },
-    isRequiredName(value) {
-      if (value) {
-        this.step.errorForm = false;
-      }
-      if (value && value.trim()) {
-        return true;
-      }
-      return "This is required name";
-    },
-    isRequiredCompanyname(value) {
-      if (value && value.trim()) {
-        return true;
-      }
-      return "This is required";
-    },
-    validateEmail(value) {
-      if (!value) {
-        return "This field is required Email";
-      }
-      const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-      if (!regex.test(value)) {
-        return "This field must be a valid email";
-      }
-      return true;
-    },
-    isRequiredNumbe(value) {
-      if (+value && value.trim()) {
-        return true;
-      }
-      return "This is required";
-    },
-    handleTermsState() {
-      this.step.validated = false;
-    },
-    handleSubmit() {
-      this.step.validated = true;
-      if (!this.step.selectOption) {
-        this.step.selectRequid = true;
-      } else {
-        this.step.selectRequid = false;
-      }
-    },
-    hanldeReset() {
-      this.$store.dispatch("reset");
-      this.step = {};
-    },
+    // handeOnInput(value) {
+    //   if (!value) {
+    //     this.state.error = true;
+    //   }
+    //   this.state.listSteps.map((listStep) => {
+    //     return listStep.forms.map((item) => {
+    //       return (item.model = value);
+    //       // console.log("check item : ", item.model= value);
+    //     });
+    //   });
+    // },
   },
+  // computed: {
+  //   ...mapState({
+  //     currentPage: (state) => state.currentPage,
+  //   }),
+  //   termsError() {
+  //     return this.step.validated && !this.step.termsState;
+  //   },
+  // },
+  // methods: {
+  //   onSubmit(values) {
+  //     console.log(JSON.stringify(values, null, 2));
+  //   },
+  //   handleStepBack(value) {
+  //     if (value.name.trim() === "" && value.email.trim() === "") {
+  //       this.step.errorForm = true;
+  //     }
+  //     const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  //     if (value.name.trim() && regex.test(value.email)) {
+  //       this.$store.dispatch("backStep");
+  //       this.step.errorForm = false;
+  //     }
+  //   },
+  //   handleStepBack2(value) {
+  //     const validation =
+  //       isNaN(value.numberofemployee) || value.numberofemployee > 1;
+  //     if (value.companyname.trim() && validation) {
+  //       this.$store.dispatch("backStep");
+  //       return false;
+  //     }
+  //   },
+  //   handleStepEnd() {
+  //     this.$store.dispatch("endStep");
+  //   },
+  //   isRequiredName(value) {
+  //     if (value) {
+  //       this.step.errorForm = false;
+  //     }
+  //     if (value && value.trim()) {
+  //       return true;
+  //     }
+  //     return "This is required name";
+  //   },
+  //   isRequiredCompanyname(value) {
+  //     if (value && value.trim()) {
+  //       return true;
+  //     }
+  //     return "This is required";
+  //   },
+  //   validateEmail(value) {
+  //     if (!value) {
+  //       return "This field is required Email";
+  //     }
+  //     const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  //     if (!regex.test(value)) {
+  //       return "This field must be a valid email";
+  //     }
+  //     return true;
+  //   },
+  //   isRequiredNumbe(value) {
+  //     if (+value && value.trim()) {
+  //       return true;
+  //     }
+  //     return "This is required";
+  //   },
+  //   handleTermsState() {
+  //     this.step.validated = false;
+  //   },
+  //   handleSubmit() {
+  //     this.step.validated = true;
+  //     if (!this.step.selectOption) {
+  //       this.step.selectRequid = true;
+  //     } else {
+  //       this.step.selectRequid = false;
+  //     }
+  //   },
+  //   hanldeReset() {
+  //     this.$store.dispatch("reset");
+  //     this.step = {};
+  //   },
+  // },
 };
 </script>
 

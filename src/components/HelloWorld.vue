@@ -1,7 +1,8 @@
 <template>
   <progress-vue></progress-vue>
   <header-vue></header-vue>
-  <form-validation-ccopy-vue></form-validation-ccopy-vue>
+  <!-- <FormValidationCcopycopyVue /> -->
+  <FormValidationVue />
   <!-- <form-validation></form-validation> -->
 </template>
 
@@ -9,15 +10,18 @@
 import HeaderVue from "./stepForm/Header.vue";
 
 import ProgressVue from "./stepForm/Progress.vue";
+// import FormValidationCcopycopyVue from "./stepForm/FormValidationCcopycopy.vue";
 // import formValidation from "./stepForm/FormValidation.vue";
-import FormValidationCcopyVue from "./stepForm/FormValidationCcopy.vue";
+// import FormValidationCcopyVue from "./stepForm/FormValidation.vue";
+import FormValidationVue from "./stepForm/FormValidation.vue";
 export default {
   name: "HelloWorld",
   components: {
     HeaderVue,
     ProgressVue,
     // formValidation,
-    FormValidationCcopyVue
+    FormValidationVue,
+    // FormValidationCcopycopyVue,
   },
   props: {},
   data() {
